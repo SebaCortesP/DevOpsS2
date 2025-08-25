@@ -1,0 +1,26 @@
+YAMLCopiar 
+
+      trigger:  
+      
+      - main 
+      
+      pool:  
+         vmImage: ubuntu-latest 
+      
+      jobs: 
+      - deployment: VMDeploy 
+        displayName: Deploy to VM 
+        environment:  
+         name: VMenv 
+         resourceType: virtualMachine 
+         resourceName: USHAN-PC # only deploy to the VM resource named USHAN-PC 
+      
+        strategy: 
+      
+          runOnce: 
+      
+            deploy:    
+      
+                steps: 
+      
+                - script: echo "Hello world"
