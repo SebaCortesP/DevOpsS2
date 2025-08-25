@@ -1,26 +1,20 @@
-YAMLCopiar 
+trigger:
+  - main 
 
-      trigger:  
-      
-      - main 
-      
-      pool:  
-         vmImage: ubuntu-latest 
-      
-      jobs: 
-      - deployment: VMDeploy 
-        displayName: Deploy to VM 
-        environment:  
-         name: VMenv 
-         resourceType: virtualMachine 
-         resourceName: vm14m2 # only deploy to the VM resource named vm14m2 
-      
-        strategy: 
-      
-          runOnce: 
-      
-            deploy:    
-      
-                steps: 
-      
-                - script: echo "Hello world"
+pool:
+  vmImage: ubuntu-latest
+
+jobs:
+- deployment: VMDeploy
+  displayName: Deploy to VM
+  environment:
+    name: VMenv
+    resourceType: virtualMachine
+    resourceName: vm14m2  # debe coincidir exactamente con el nombre del recurso VM registrado
+  strategy:
+    runOnce:
+      deploy:
+        steps:
+          - script: echo "Hello world"
+            displayName: "Test script"
+
