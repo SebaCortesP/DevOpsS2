@@ -8,7 +8,7 @@ jobs:
 - deployment: VMDeploy
   displayName: Deploy to VM
   environment:
-    name: VMenv
+    name: Grupo_14
     resourceType: virtualMachine
     resourceName: vm14m2  # debe coincidir exactamente con el nombre del recurso VM registrado
   strategy:
