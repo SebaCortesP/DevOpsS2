@@ -13,7 +13,7 @@ YAMLCopiar
         environment:  
          name: VMenv 
          resourceType: virtualMachine 
-         resourceName: vm14m2 # only deploy to the VM resource named USHAN-PC 
+         resourceName: vm14m2 # only deploy to the VM resource named vm14m2 
       
         strategy: 
       
