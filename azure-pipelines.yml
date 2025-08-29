@@ -1,0 +1,41 @@
+trigger:
+  - main # Cambia la rama si necesitas
+
+stages:
+  - stage: DeployToVM
+    displayName: "Deploy Apache + PHP + Composer"
+    jobs:
+      - deployment: InstallApachePHPComposer
+        displayName: "Instalar Apache, PHP y Composer"
+        environment: "Grupo14Sumativa1" 
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+                - script: |
+                    sudo apt update
+                    # Instalar Apache
+                    sudo apt install -y apache2 libapache2-mod-php
+                    sudo systemctl enable apache2
+                    sudo systemctl restart apache2
+
+                    # Instalar PHP y extensiones necesarias para Laravel
+                    sudo apt install -y php php-cli php-mbstring php-xml php-bcmath php-curl php-zip unzip
+
+                    # Instalar Composer
+                    EXPECTED_SIGNATURE="$(wget -q -O - https://composer.github.io/installer.sig)"
+                    php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+                    ACTUAL_SIGNATURE="$(php -r "echo hash_file('sha384', 'composer-setup.php');")"
+                    if [ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]; then
+                        >&2 echo 'ERROR: Invalid installer signature'
+                        rm composer-setup.php
+                        exit 1
+                    fi
+                    sudo php composer-setup.php --install-dir=/usr/local/bin --filename=composer
+                    rm composer-setup.php
+
+                    # Probar versiones
+                    apache2 -v
+                    php -v
+                    composer -V
+                  displayName: "Instalar Apache, PHP y Composer"
