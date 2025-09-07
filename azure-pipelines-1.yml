@@ -1,0 +1,38 @@
+trigger:
+  branches:
+    include:
+      - main   # rama que dispara el pipeline
+
+variables:
+  azureSubscription: 'MiServiceConnection'   # Service Connection que creaste
+  resourceGroup: 'az204-appcont-rg'
+  acrName: 'az204acr123'
+  imageName: 'myapp'
+  imageTag: 'v1'
+
+stages:
+- stage: BuildAndPush
+  jobs:
+  - job: Build
+    displayName: Build & Push Image to ACR
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+
+    # 1️ Checkout del código
+    - checkout: self
+
+    # 2️ Login en Azure y registro del ACR
+    - task: AzureCLI@2
+      inputs:
+        azureSubscription: $(azureSubscription)
+        scriptType: bash
+        scriptLocation: inlineScript
+        inlineScript: |
+          # Obtener login server del ACR
+          ACR_LOGIN=$(az acr show -n $(acrName) -g $(resourceGroup) --query loginServer -o tsv)
+          echo "Login server: $ACR_LOGIN"
+
+          # Construir y pushear la imagen directamente en ACR usando az acr build
+          az acr build --registry $(acrName) --image $(imageName):$(imageTag) .
+
